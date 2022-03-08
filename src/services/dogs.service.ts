@@ -1,3 +1,4 @@
+import fp from "fastify-plugin";
 import { FastifyInstance } from "fastify";
 import _dogs from "../db/dogs.json";
 
@@ -10,14 +11,17 @@ const AllDogs = _dogs as DogDB;
 declare module "fastify" {
   interface FastifyInstance {
     db: {
-      findAll: () => Promise<DogDB>;
+      dogs: {
+        findAll: () => Promise<DogDB>;
+      };
     };
   }
 }
 
-export default async function DogsService(fastify: FastifyInstance) {
+async function DogsService(fastify: FastifyInstance) {
   async function findAll() {
     return AllDogs;
   }
   fastify.decorate("db", { dogs: { findAll } });
 }
+export default fp(DogsService);

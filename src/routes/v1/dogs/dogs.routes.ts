@@ -5,7 +5,7 @@ export default async function v1(fastify: FastifyInstance) {
    * Fetches all dogs
    */
   fastify.get("/", async (_req, reply) => {
-    const dogs = await fastify.db.findAll();
+    const dogs = await fastify.db.dogs.findAll();
     reply.send(dogs);
   });
 
