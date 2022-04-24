@@ -13,3 +13,8 @@ You'll find in `dogs.services.ts` some basic logic that's working with the datab
 If possible, I'd commit your work to a repo (it can be private if you'd like). It'd be nice to see the steps you're taking as you unravel the challenge. There's no official time limit, but as I said (ad nauseum) the sooner you complete, the sooner we can move to the next steps. We can then get together and discuss your work and the process.
 
 Again, let me know if you have any questions. Looking forward to seeing what you come up with!
+
+# Setup
+- To set up this project run the following commands:
+<!-- > npm run build
+> npm run start -->

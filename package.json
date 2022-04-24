@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --exec 'yarn build && yarn start' | pino-colada",
+    "devJ": "nodemon --exec \"yarn build && yarn start\" | pino-colada",
     "build": "tsc",
     "start": "node dist/index.js",
     "clean": "rm -rf dist/ && rm tsconfig.tsbuildinfo"

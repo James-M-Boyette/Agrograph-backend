@@ -6,6 +6,8 @@ const server: FastifyInstance = Fastify({
   logger: true,
 });
 
+const port = 4242;
+
 const start = async () => {
   try {
     // Register services
@@ -20,8 +22,8 @@ const start = async () => {
       indexPattern: /.*routes(\.ts|\.js|\.cjs|\.mjs)$/,
     });
 
-    await server.listen(3000);
-    server.log.info(`Server started on port 3000`);
+    await server.listen(port);
+    server.log.info(`Server started on port ${port}`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);
