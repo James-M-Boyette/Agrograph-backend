@@ -6,7 +6,7 @@ const server: FastifyInstance = Fastify({
   logger: true,
 });
 
-const port = 4242;
+const port = 3000;
 
 const start = async () => {
   try {

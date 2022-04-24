@@ -35,6 +35,14 @@ NtH:
 What are our questions?
 //   - What is Fastify? > what is especially important to know (re:differences) to express (for this project)
 //   - How do we start this version of fastify app? (no explicit instructions in Readme)
+//      Q: Did yarn need to be installed? Might be useful to note that both yarn & npm need to be installed (if the candidate hasn't already)
+//      1) Run 'npm run dev'
+//      > Note: the 'dev' script needed back-slashes added to make it work (at least in vs code)
+//        ~ "dev": "nodemon --exec 'yarn build && yarn start' | pino-colada" 
+//        ~ vs
+//        ~ "devJ": "nodemon --exec \"yarn build && yarn start\" | pino-colada",
+//      2) Test that the app is up and running by going to http://localhost:3000/v1/health/ping - if your server has been succesfully started, you should get back 'pong'
+
 //   - Do we need to research Next.js to understand this better/as a short-cut?
 
 Goals:
