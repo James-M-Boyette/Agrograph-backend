@@ -17,6 +17,7 @@ declare module "fastify" { // "Declaration merging"
       dogs: {
         findAll: () => Promise<DogDB>;
         findMatches: (params:string) => Promise<DogDB>;
+        addBreed: (params:string) => Promise<DogDB>;
       };
     };
   }
@@ -31,79 +32,59 @@ async function DogsService(fastify: FastifyInstance) {
   // SHOW
   async function findMatches(params:string) {
     console.log(`Here are the params received by dogs.service: ${params}`);
-    // 1. Test return ...
-    // return ['Bulldog', 'Pug']
 
-    // 2. Return a k:v search ...
-    // const resultsHard = AllDogs['bulldog'] // finds the key of 'bulldog' & returns its sub-breed values
-
-    // 3. Return a k:v search using params ...
-    // const searchResult:string[] = AllDogs[params];
-
-    // 4. Return partial matches between params & database ...
-    // const searchResult:string[] = AllDogs[params];
-
+    // 6. Handle "No match" scenarios ...
     const keysFound:string[] = Object.keys(AllDogs).filter(key => key.startsWith(params)).sort(); // Returns partially-matching keys
     console.log(`Here are the matched keys:`)
     console.log(keysFound)
-    // const searchResult:string[] = keysFound.map(item => ({ date: item.date, price: item["price(USD)"] }));
-    // let searchResult:any = keysFound.map(item => (console.log(AllDogs[item])));
 
-    // init
-    // const keyValue = new Map()
-    // // add
-    // // keyValue.set('firstname', 'tony')
-    // // keysFound.forEach(keyValue.set('firstname', 'tony'))
+    const searchResults:any = {};
 
-    // for (let i = 0; i < keysFound.length; i++) {
-    //   keyValue.set(keysFound[i], AllDogs[keysFound[i]])
+    // if(keysFound === []){
+    //   const noResults:string = 'sorry';
+    //   return noResults
+    // } else {
+      for (let i = 0; i < keysFound.length; i++) {
+        searchResults[keysFound[i]] = AllDogs[keysFound[i]];
+      }
+      return searchResults
     // }
-    // // keysFound.forEach(keyValue.set('firstname', 'tony'))
-    // console.log(`Here's the output:`)
-    // console.log(keyValue)
-    // console.log(typeof keyValue)
-
-
-
-    const keyValue:any = {};
-    // add
-    // keyValue.set('firstname', 'tony')
-    // keysFound.forEach(keyValue.set('firstname', 'tony'))
-
-    
-    for (let i = 0; i < keysFound.length; i++) {
-      keyValue[keysFound[i]] = AllDogs[keysFound[i]];
-    }
-    // keysFound.forEach(keyValue.set('firstname', 'tony'))
-    console.log(`Here's the output:`)
-    console.log(keyValue)
-    console.log(typeof keyValue)
-
-    let searchResult:any = keysFound.map(item => (console.log(AllDogs[item]))); // Returns values of partially-matching keys
-
-    // Decomp: What do I want to do?
-    //  - I want, for every matched key, 
-    //    to push that k:v into an object
-    //    > Problem: .filter() will return the matching *values* of a specific key (all cars, where color = 'red')
-
-    // let myObject = AllDogs.map(element => {
-    //   if(element === "bulldog"){
-    //     myObject.push(element)
-    //   }
-    // })
-    // console.log(`Here's my object:`)
-    // console.log(myObject)
-
-    // return searchResult
-    // return {"bulldog": ["boston", "english", "french"],
-    // "bullterrier": ["staffordshire"],}
-    return keyValue
-    // return {AllDogs[keysFound]}
-
-    // 5. Handle "No match" scenarios ...
 
   }
-  fastify.decorate("db", { dogs: { findAll, findMatches } });
+
+  // POST
+  async function addBreed(params:string) {
+    console.log(`Add breed:`);
+    console.log(params);
+    console.log(params.length);
+
+    
+    
+    if(params.length > 0){
+      // Convert params string into array of strings ...
+      const paramsConvert:string[] = params.split(','); 
+      console.log(paramsConvert.length)
+
+      const paramKey = paramsConvert[0];
+      console.log(`Here's the paramKey: ${paramKey}`)
+      const paramValues:string[] = [];
+      for(let i = 1; i < paramsConvert.length; i++){paramValues.push(paramsConvert[i])}
+      const toBeStored = {[paramKey] : paramValues};
+
+      console.log(toBeStored);
+
+      AllDogs[paramKey] = paramValues;
+      return `success`
+
+    } else {
+      console.log(`Warning: no data received`)
+
+      return `Warning: no data received`
+
+    }
+  }
+
+  fastify.decorate("db", { dogs: { findAll, findMatches , addBreed } });
 }
 export default fp(DogsService); // fb = fastify plugin (imported @ l1)
 
@@ -125,3 +106,31 @@ export default fp(DogsService); // fb = fastify plugin (imported @ l1)
 //     name: string; // may only contain strings
 //     knownFor: string[]; // may only contain an array of *strings*
 //   };
+
+
+
+// SCRAP from findMatches()
+
+    // 1. Test return ...
+    // return ['Bulldog', 'Pug']
+
+    // 2. Return a k:v search ...
+    // const resultsHard = AllDogs['bulldog'] // finds the key of 'bulldog' & returns its sub-breed values
+
+    // 3. Return a k:v search using params ...
+    // const searchResult:string[] = AllDogs[params];
+
+    // 4. Return partial matches between params & database ...
+    // const keysFound:string[] = Object.keys(AllDogs).filter(key => key.startsWith(params)).sort(); // Returns partially-matching keys
+    // console.log(`Here are the matched keys:`)
+    // console.log(keysFound)
+    
+    // 5. Return full k:v of partial matches ...
+    // let searchResult:any = keysFound.map(item => (console.log(AllDogs[item]))); // Returns values of partially-matching keys (save for future use?)
+    // const keyValue:any = {};
+
+    // for (let i = 0; i < keysFound.length; i++) {
+    //   keyValue[keysFound[i]] = AllDogs[keysFound[i]];
+    // }
+
+    // return keyValue
