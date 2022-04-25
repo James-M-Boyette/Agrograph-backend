@@ -19,8 +19,10 @@ export default async function v1(fastify: FastifyInstance) {
 
   fastify.get("/search", async (_req, reply) => {
     // Log params and QUERY
-    console.log(`Here's the _req: ${_req}`)
-    console.log(`Here's the _req.query value: ${_req.query}`)
+    console.log(`Here's the _req:`)
+    // console.log(_req)
+    console.log(`Here's the _req.query value:`)
+    console.log(_req.query)
 
     console.log(`Here's the query string:`)
     const queryObject = url.parse(_req.url, true).query;
