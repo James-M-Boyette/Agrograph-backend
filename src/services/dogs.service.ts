@@ -1,6 +1,7 @@
 import fp from "fastify-plugin";
 import { FastifyInstance } from "fastify";
 import _dogs from "../db/dogs.json";
+const fs = require('fs');
 
 // Small type-cast to make the json friendlier to work with ...
 type DogDB = {
@@ -58,22 +59,32 @@ async function DogsService(fastify: FastifyInstance) {
     console.log(params);
     console.log(params.length);
 
-    
-    
     if(params.length > 0){
       // Convert params string into array of strings ...
       const paramsConvert:string[] = params.split(','); 
       console.log(paramsConvert.length)
 
+      // Create DB Key & Value(s)
       const paramKey = paramsConvert[0];
-      console.log(`Here's the paramKey: ${paramKey}`)
+      // console.log(`Here's the paramKey: ${paramKey}`)
       const paramValues:string[] = [];
-      for(let i = 1; i < paramsConvert.length; i++){paramValues.push(paramsConvert[i])}
-      const toBeStored = {[paramKey] : paramValues};
+      for(let i = 1; i < paramsConvert.length; i++){
+        paramValues.push(paramsConvert[i])
+      }
+      // const toBeStored = {[paramKey] : paramValues};
 
-      console.log(toBeStored);
+      // console.log(toBeStored);
 
       AllDogs[paramKey] = paramValues;
+      console.log(AllDogs)
+
+      const newData = JSON.stringify(AllDogs);
+      
+      fs.writeFile('./src/db/dogs.json', newData , (err:any) => { 
+        if(err) console.log('error', err);
+      });
+
+      console.log("New data added");
       return `success`
 
     } else {
