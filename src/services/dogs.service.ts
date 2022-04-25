@@ -34,7 +34,7 @@ declare module "fastify" { // "Declaration merging"
     db: { // "db" is a ?property? of the interface
       dogs: {
         findAll: () => Promise<DogDB>;
-        findMatches: () => Promise<DogDB>;
+        findMatches: (params:string) => Promise<DogDB>;
       };
     };
   }
@@ -46,19 +46,23 @@ async function DogsService(fastify: FastifyInstance) {
   }
   
 
-  async function findMatches(params:object) {
-    // Test return
+  async function findMatches(params:string) {
+    console.log(`Here are the params received by dogs.service: ${params}`);
+    // 1. Test return ...
     // return ['Bulldog', 'Pug']
 
-    // Return a search
-    // const results = dogs.find((dog) => dog.id === id) // Idea #1 for finding matches, but instead using includes()
-    
-    const resultsHard = AllDogs['bulldog'] // finds the key of 'bulldog' & returns its sub-breed values
-    return resultsHard
+    // 2. Return a k:v search ...
+    // const resultsHard = AllDogs['bulldog'] // finds the key of 'bulldog' & returns its sub-breed values
 
+    // 3. Return a k:v search using params ...
+    // const searchResult:string[] = AllDogs[params];
+
+    // 4. Return partial matches between params & database ...
+    const searchResult:string[] = AllDogs[params];
+
+    return searchResult
 
   }
-
   fastify.decorate("db", { dogs: { findAll, findMatches } });
 }
 export default fp(DogsService); // fb = fastify plugin (imported @ l1)
