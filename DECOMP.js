@@ -30,11 +30,13 @@ Notes:
 NtH:
 //   - What does "Fastify plugin that can be leveraged to abstract meaningful logic" mean, and does it inform how we architect things
 //   - Research best practices & implement (if time allows), prioritizing flexibility & maintainability
+//   - Q: Do they want *values* to be searched (returning all breeds whose ?sub-breed? includes 'miniature')
 
 
 What are our questions?
-//   - What is Fastify? > what is especially important to know (re:differences) to express (for this project)
-//   - How do we start this version of fastify app? (no explicit instructions in Readme)
+//   - [DONE] What is Fastify? > what is especially important to know (re:differences) to express (for this project)
+
+//   - [DONE] How do we start this version of fastify app? (no explicit instructions in Readme)
 //      Q: Did yarn need to be installed? Might be useful to note that both yarn & npm need to be installed (if the candidate hasn't already)
 //      1) Run 'npm run dev'
 //      > Note: the 'dev' script needed back-slashes added to make it work (at least in vs code)
@@ -42,6 +44,14 @@ What are our questions?
 //        ~ vs
 //        ~ "devJ": "nodemon --exec \"yarn build && yarn start\" | pino-colada",
 //      2) Test that the app is up and running by going to http://localhost:3000/v1/health/ping - if your server has been succesfully started, you should get back 'pong'
+
+//   - How does the 2nd tutorial connect its routes to its services?
+//   - How should "declaring a module" work with fastify? Given 'fastify.db.dogs.findAll'
+//   - What is 
+//      > 'type DogDB = {
+//           [breed: string]: string[];
+//        };'
+//      > 'const AllDogs = _dogs as DogDB'
 
 //   - Do we need to research Next.js to understand this better/as a short-cut?
 
