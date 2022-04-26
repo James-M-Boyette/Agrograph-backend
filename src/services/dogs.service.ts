@@ -87,6 +87,6 @@ export default fp(DogsService);
 
 
 // TO-DO
-//    - Make POST *route* handle body params (instead of hard-coded)
+//    - [DONE] Make POST *route* handle body params (instead of hard-coded)
 //    - Make SHOW handle "no-match scenarios"
 //    - Break-out database save to seperate service
