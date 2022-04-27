@@ -2,22 +2,18 @@ import { FastifyInstance } from "fastify";
 const url = require('url');
 
 export default async function v1(fastify: FastifyInstance) {
-    // Fetches ALL dogs
+    // Fetch ALL dogs
     fastify.get("/", async (_req, reply) => {
       const dogs = await fastify.db.dogs.findAll();
       reply.send(dogs);
     });
 
-    // Fetches MATCHING dogs
+    // Fetch MATCHING dog(s)
     fastify.get("/search", async (_req, reply) => {
-      console.log(`Here's the QUERY value (received by the GET /search route):`)
-      console.log(_req.query)
-  
       const queryObject = url.parse(_req.url, true).query;
       const searchParam: string = queryObject['breed'];
   
       const matches = await fastify.db.dogs.findMatches(searchParam);
-  
       reply.send({ matching_breeds : matches })
     });
 
@@ -38,11 +34,8 @@ export default async function v1(fastify: FastifyInstance) {
       }
     }
   
-    // Adds NEW dog to database
+    // Add NEW dog
     fastify.post("/", CREATE_DOGS_SCHEMA, async (req, reply) => {
-      console.log(`Here's the BODY value (received by the POST route):`);
-      console.log(req.body);
-
       const paramBody:object = req.body as object;
 
       reply.send(await fastify.db.dogs.addBreed(paramBody))

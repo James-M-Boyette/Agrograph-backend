@@ -31,12 +31,10 @@ async function DogsService(fastify: FastifyInstance) {
 
   // SHOW
   async function findMatches(params:string) {
-    console.log(`Here are the params received by dogs.service: ${params}`);
+    // Store partially-matching keys
+    const breedsFound:string[] = Object.keys(AllDogs).filter(key => key.toLowerCase().includes(params.toLowerCase())).sort(); 
 
-    const breedsFound:string[] = Object.keys(AllDogs).filter(key => key.toLowerCase().includes(params.toLowerCase())).sort(); // Returns partially-matching keys
-    console.log(`Here are the matched keys:`)
-    console.log(breedsFound)
-
+    // Store matching 'main breeds' and 'sub-breeds'
     const keyValueMatches:string[] = Object.keys(AllDogs).reduce((acc:string[], breed) => { // Check each key (converted to array in Object.keys)
       if(breed.toLowerCase().includes(params.toLowerCase())){ // Add any matching Keys to the results
         acc.push(breed)
@@ -48,20 +46,11 @@ async function DogsService(fastify: FastifyInstance) {
       })
       return acc
     }, [])
-    console.log(`Here's all matches ():`)
-    console.log(keyValueMatches)
 
-    // keysFound replace
-    // const searchResults:any = {};
-    // for (let i = 0; i < keysFound.length; i++) {
-    //   searchResults[keysFound[i]] = AllDogs[keysFound[i]];
-    // }
-    // return searchResults
-    return `stuff`
+    return keyValueMatches
   }
 
   async function addBreed(params: { breed: string, subBreeds: string[] }) {
-
     // Convert inputs to lower case
     const mainBreed:string = params.breed.toLowerCase();
     const subBreeds:string[] = params.subBreeds.map(element => {
@@ -70,39 +59,28 @@ async function DogsService(fastify: FastifyInstance) {
 
     // Validation checks
     const message = await validate(mainBreed, subBreeds)
-
     if(message) {return message} // Send a validation failure message back, if any are returned from 'validate'
-      
-    console.log(`Here's the breed (key):`);
-    console.log(mainBreed)
-    console.log(`Here's the sub-breeds (values):`);
-    console.log(subBreeds)
 
     // Create DB Key & Value(s)
     subBreeds.forEach((breed) => AllDogs[mainBreed].push(breed))
 
+    // Save AllDogs to database
     const newData = JSON.stringify(AllDogs);
     await fs.writeFile('./src/db/dogs.json', newData , (err:any) => {
       if(err) console.log('error', err);
     });
-
     return newData
-}
-
+  }
+  
   fastify.decorate("db", { dogs: { findAll, findMatches , addBreed } });
 }
 
 function validate(paramsBreed:string, paramsSubBreeds:string[]) {
-  console.log(paramsBreed);
-  console.log(paramsSubBreeds);
   // // Validation: "No data received"
-  if (!paramsBreed) {
-    // console.log(`Warning: no data received`);
-    return `Warning: no data received`}
+  if (!paramsBreed) {return `Warning: no data received`}
+
   // // Validation: "Must be at least 5 characters"
-  if (paramsBreed.length < 5) {
-    // console.log(`Main breed must be at least 5 characters`);
-    return `Must be at least 5 characters`}
+  if (paramsBreed.length < 5) {return `Must be at least 5 characters`}
 
   // // Validation: "Must not already exist in the database"
   function matchCheck (paramsBreed:string, paramsSubBreeds:string[]) {
@@ -117,16 +95,8 @@ function validate(paramsBreed:string, paramsSubBreeds:string[]) {
   }
 
   let matchResults:string = matchCheck(paramsBreed, paramsSubBreeds);
-  if (matchResults){
-    console.log(`Main breed & sub-breeds can't already exist - '${matchResults}' is already in database`)
-    return `Main breed & sub-breeds can't already exist - '${matchResults}' is already in database`}
-
+  if (matchResults){return `Main breed & sub-breeds can't already exist - '${matchResults}' is already in database`}
 }
 
 export default fp(DogsService);
 
-
-// TO-DO
-//    - [DONE] Make POST *route* handle body params (instead of hard-coded)
-//    - Make SHOW handle "no-match scenarios"
-//    - Break-out database save to seperate service
