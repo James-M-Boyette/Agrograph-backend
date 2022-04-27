@@ -3,21 +3,18 @@ import { FastifyInstance } from "fastify";
 import _dogs from "../db/dogs.json";
 const fs = require('fs');
 
-// Small type-cast to make the json friendlier to work with
 type DogDB = {
-  [breed: string]: string[]; // "breed" will become the key (after declared as type 'string'); dynamic key names
+  [breed: string]: string[];
 };
-const AllDogs = _dogs as DogDB; // In 'AllDogs' ... store 'dogs.json' (imported as '_dogs') so long as they square with the custom DogDB type properties
-// - All keys should be strings,
-// - All values should be arrays of strings
+const AllDogs = _dogs as DogDB;
 
-declare module "fastify" { // "Declaration merging"
-  interface FastifyInstance { // No "export" - 'export interface ...'
-    db: { // "db" is a ?property? of the interface
+declare module "fastify" {
+  interface FastifyInstance {
+    db: {
       dogs: {
         findAll: () => Promise<DogDB>;
         findMatches: (params:string) => Promise<DogDB>;
-        addBreed: (params:object) => Promise<DogDB>; // This stipulates (among other things) that addBreed should expect an object
+        addBreed: (params:object) => Promise<DogDB>;
       };
     };
   }
