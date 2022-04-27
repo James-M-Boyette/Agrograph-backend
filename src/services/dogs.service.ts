@@ -79,10 +79,10 @@ async function DogsService(fastify: FastifyInstance) {
     console.log(subBreeds)
 
     // Create DB Key & Value(s)
-    AllDogs[mainBreed.toLowerCase()] = subBreeds;
+    subBreeds.forEach((breed) => AllDogs[mainBreed].push(breed))
 
     const newData = JSON.stringify(AllDogs);
-    await fs.writeFile('./src/db/dogs.json', newData , (err:any) => { //!! WE'RE OVERWRITTING INSTEAD OF ADDING
+    await fs.writeFile('./src/db/dogs.json', newData , (err:any) => {
       if(err) console.log('error', err);
     });
 
@@ -97,63 +97,30 @@ function validate(paramsBreed:string, paramsSubBreeds:string[]) {
   console.log(paramsSubBreeds);
   // // Validation: "No data received"
   if (!paramsBreed) {
-    console.log(`Warning: no data received`);
+    // console.log(`Warning: no data received`);
     return `Warning: no data received`}
   // // Validation: "Must be at least 5 characters"
   if (paramsBreed.length < 5) {
-    console.log(`Main breed must be at least 5 characters`);
+    // console.log(`Main breed must be at least 5 characters`);
     return `Must be at least 5 characters`}
+
   // // Validation: "Must not already exist in the database"
-  
-  // "If the keys match and any values match ..."
-  
-  function match (paramsBreed:string, paramsSubBreeds:string[]) {
+  function matchCheck (paramsBreed:string, paramsSubBreeds:string[]) {
     let results:string = '';
     Object.keys(AllDogs).forEach((key) => { 
-      if(key === paramsBreed) { // Need this to check subBreed matches using .includes()
-        // Do we get a match on the keys?
-        console.log(`Match found ... here's the breed & the params:`);
-        console.log(key);
-        console.log(paramsBreed);
-        // What's the database key's value(s)?
-        console.log(`HERE is 'AllDogs[key]' (the values array):`);
-        console.log(AllDogs[key]);
-        // Do any of the user-submitted values match any of the DB values? If 'yes', store the first match
+      if(key === paramsBreed) {
         const match = paramsSubBreeds.filter(paramsSubBreed => AllDogs[key].includes(paramsSubBreed));
-        console.log(`Here's MATCH`)
-        console.log(match)
-        console.log(typeof match)
         if(match){results = match[0];}
-        // results = match[0];
-        
-        // return match
       } 
-
-      // DECOMP
-      // - I want to check whether the current key's values (in AllDogs) have any matches to the current array of values
-      // - I'd also like to return the matched value
     })
-    // MIGHT still be useful
-    // console.log(`Truthiness of AllDogs.key === paramsSubBreeds`)
-    // console.log(AllDogs.key === paramsSubBreeds)
-    console.log(`Here's 'results': ${results}`)
     return results
   }
-  let matchResults:string = match(paramsBreed, paramsSubBreeds);
-  console.log(`Here's matchResults`)
-  console.log(matchResults)
-  console.log(typeof matchResults)
-  // if (matchResults !== ''){
+
+  let matchResults:string = matchCheck(paramsBreed, paramsSubBreeds);
   if (matchResults){
     console.log(`Main breed & sub-breeds can't already exist - '${matchResults}' is already in database`)
     return `Main breed & sub-breeds can't already exist - '${matchResults}' is already in database`}
-  // const dbMatch:string = match(paramsBreed, paramsSubBreeds);
-  // console.log(`Here's dbMatch:`);
-  // console.log(dbMatch);
-  // if (dbMatch){
-  //   console.log(`Must not already exist in the database`);
-  //   return `Must not already exist in the database`}
-  // // - not case-sensitive
+
 }
 
 export default fp(DogsService);
