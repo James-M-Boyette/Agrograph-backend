@@ -21,11 +21,11 @@ export default async function v1(fastify: FastifyInstance) {
       reply.send({ matching_breeds : matches })
     });
 
-    const options = {
-      schema:{
-        body:{
-          type:'object', 
-          properties:{
+    const CREATE_DOGS_SCHEMA = {
+      schema: {
+        body: {
+          type: 'object', 
+          properties: {
             breed: {
               type: 'string',
             },
@@ -33,25 +33,21 @@ export default async function v1(fastify: FastifyInstance) {
               type: 'array',
               default: []
             },
-            }}}}
+          }
+        }
+      }
+    }
   
     // Adds NEW dog to database
-    fastify.post("/", options, async (req, reply) => {
+    fastify.post("/", CREATE_DOGS_SCHEMA, async (req, reply) => {
       console.log(`Here's the BODY value (received by the POST route):`);
       console.log(req.body);
-  
-      const hardCode:any = {breed:'direwolf',
-        subBreeds:['wolf1', 'wolf2']}
 
       const paramBody:object = req.body as object;
 
-      const result = await fastify.db.dogs.addBreed(paramBody);
-      reply.send(result)
-  
+      reply.send(await fastify.db.dogs.addBreed(paramBody))
     });
 
   
-  // Validation: "Must be at least 5 characters"
-  // Validation: "Must not already exist in the database"
-  // - not case-sensitive
+  
 }
