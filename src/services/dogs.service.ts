@@ -83,11 +83,11 @@ function validate(paramsBreed:string, paramsSubBreeds:string[]) {
   if (paramsBreed.length < 5) {return `Must be at least 5 characters`}
 
   // // Validation: "Must not already exist in the database"
-  function matchCheck (paramsBreed:string, paramsSubBreeds:string[]) {
+  function matchCheck (breed:string, subBreeds:string[]) {
     let results:string = '';
     Object.keys(AllDogs).forEach((key) => { 
-      if(key === paramsBreed) {
-        const match = paramsSubBreeds.filter(paramsSubBreed => AllDogs[key].includes(paramsSubBreed));
+      if(key === breed) {
+        const match = subBreeds.filter(subBreed => AllDogs[key].includes(subBreed));
         if(match){results = match[0];}
       } 
     })
